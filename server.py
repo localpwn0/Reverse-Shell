@@ -76,12 +76,7 @@ class Listener:
     
     def install_file(self, pwd, filename, version):
         try:
-            try:
-                mkdir('.pwn')
-            except:
-                system('rm -rf .pwn')
-            finally:
-                mkdir('.pwn')
+            system('rm -rf .pwn ; mkdir .pwn')
             
             system('cp -r {}/{} .pwn/'.format(pwd, filename))
             chdir('.pwn')
