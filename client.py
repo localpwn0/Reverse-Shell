@@ -29,8 +29,15 @@ class Client:
         
 
     def make_loop(self, ip, port):
-        client = socket(AF_INET, SOCK_STREAM)
-        client.connect((str(ip), int(port)))
+        try:
+            client = socket(AF_INET, SOCK_STREAM)
+            client.connect((str(ip), int(port)))
+        except:
+            self.cleaner()
+            self.logo_printer()
+            print('{}Wrong Data or Server is Down ...{}'.format(self.c, self.reset))
+            exit(True)
+        
         self.cleaner()
         self.logo_printer()
         print("{}Type exit for break the loop{}".format(self.c, self.reset))
